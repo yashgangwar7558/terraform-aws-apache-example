@@ -1,7 +1,0 @@
-Terraform module to provision an EC2 instance that is running Apache.
-
-Not intented for production use. Just showcasing how to craete a custom public module on terrafrom registry.
-
-```hcl
-
-```
