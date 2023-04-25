@@ -75,7 +75,7 @@ resource "aws_instance" "my_server" {
       type        = "ssh"
       user        = "ec2-user"
       host        = self.public_ip
-      private_key = file("/home/yashgangwar123/.ssh/terraform")
+      private_key = file("${abspath(path.module)}/home/yashgangwar123/.ssh/terraform")
     }
   }
   
