@@ -61,48 +61,10 @@ resource "aws_instance" "my_server" {
   vpc_security_group_ids = [aws_security_group.sg_my_server.id]
   user_data              = data.template_file.user_data.rendered
 
-  // Local-exec allows to execute local commands after a resource is provisioned
-  provisioner "local-exec" {
-    command = "echo ${self.private_ip} >> private_ips.txt"
-  }
-
-  // Allows to execute commands on a target resource, after a resource has been provisioned
-  provisioner "remote-exec" {
-    inline = [
-      "echo ${self.private_ip} >> /home/ec2-user/private_ips.txt"
-    ]
-    connection {
-      type        = "ssh"
-      user        = "ec2-user"
-      host        = self.public_ip
-      private_key = file("${abspath(path.module)}/home/yashgangwar123/.ssh/terraform")
-    }
-  }
-  
-  // File Provisioner: copy files or directories from our local machines to the newly created resource.
-  provisioner "file" {
-    content     = "ami used: ${self.ami}"
-    destination = "/home/ec2-user/barsoon.txt"
-    connection {
-      type        = "ssh"
-      user        = "ec2-user"
-      host        = self.public_ip
-      private_key = file("/home/yashgangwar123/.ssh/terraform")
-    }
-  }
-
   tags = {
     Name = var.server_name
   }
 }
 
-// This null resource will keep running still all checks are passed for ec2 instance after its creation 
-resource "null_resource" "status" {
-  provisioner "local-exec" {
-    command = "aws ec2 instance-status-ok --instance-ids ${aws_instance.my_server.id}"
-  }
-  depends_on = [
-    aws_instance.my_server
-  ]
-}
+
 
